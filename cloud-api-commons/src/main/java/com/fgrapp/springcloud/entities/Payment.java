@@ -6,6 +6,12 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * Payment
+ *
+ * @author fan guang rui
+ * @date 2020年06月13日 20:20
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
