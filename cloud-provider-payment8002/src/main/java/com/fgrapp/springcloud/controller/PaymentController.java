@@ -20,7 +20,7 @@ public class PaymentController {
     @Resource
     private PaymentService paymentService;
     @Value("${server.port}")
-    private  int port;
+    private int port;
 
     @PostMapping(value = "/payment/create")
     public CommonResult create(@RequestBody Payment payment){
