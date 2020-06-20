@@ -5,6 +5,7 @@ import com.fgrapp.springcloud.entities.Payment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +33,7 @@ public class OrderController {
 
     @GetMapping("/consumer/payment/create")
     public CommonResult<Payment> create(Payment payment){
-        return restTemplate.postForObject(PAYMENT_URL+"payment/create",payment,CommonResult.class);
+        return restTemplate.postForObject(PAYMENT_URL+"/payment/create",payment,CommonResult.class);
     }
 
     @GetMapping("consumer/payment/get/{id}")
@@ -57,5 +58,30 @@ public class OrderController {
             log.info(serviceInstance.getServiceId()+"\t"+serviceInstance.getHost()+"\t"+serviceInstance.getPort()+"\t"+serviceInstance.getUri());
         });
         return new CommonResult(200,"查询成功",discoveryClient);
+    }
+
+    @GetMapping("consumer/payment/getForEntity/{id}")
+    public CommonResult<Payment> getPayment2(@PathVariable("id")Long id){
+        ResponseEntity<CommonResult> entity = restTemplate.getForEntity(PAYMENT_URL + "/payment/discovery", CommonResult.class);
+        if (entity.getStatusCode().is2xxSuccessful()) {
+            log.info(entity.getHeaders().toString());
+            log.info(entity.getBody().toString());
+            log.info(entity.getStatusCodeValue()+"");
+            return entity.getBody();
+        }else {
+            return new CommonResult(444,"查询失败",entity);
+        }
+    }
+    @GetMapping("/consumer/payment/createForEntity")
+    public CommonResult<Payment> create2(Payment payment){
+        ResponseEntity<CommonResult> entity = restTemplate.postForEntity(PAYMENT_URL + "/payment/create", payment, CommonResult.class);
+        if (entity.getStatusCode().is2xxSuccessful()) {
+            log.info(entity.getHeaders().toString());
+            log.info(entity.getBody().toString());
+            log.info(entity.getStatusCodeValue()+"");
+            return entity.getBody();
+        }else {
+            return new CommonResult(444,"插入失败",entity);
+        }
     }
 }
